@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 export default function ProductDetailsPage() {
+
   const { id } = useParams();
   const [product, setProduct] = useState<any>(null);
+  const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
     fetchProduct();
@@ -17,12 +19,20 @@ export default function ProductDetailsPage() {
     setProduct(data);
   };
 
-  if (!product) {
-    return (
-      <div className="p-10 text-center">
-        Loading product...
-      </div>
+  const nextImage = () => {
+    setCurrentImage((prev) =>
+      prev === product.images.length - 1 ? 0 : prev + 1
     );
+  };
+
+  const prevImage = () => {
+    setCurrentImage((prev) =>
+      prev === 0 ? product.images.length - 1 : prev - 1
+    );
+  };
+
+  if (!product) {
+    return <div className="p-10 text-center">Loading...</div>;
   }
 
   return (
@@ -30,17 +40,36 @@ export default function ProductDetailsPage() {
 
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
 
-        {/* Images */}
-        <div>
+        {/* IMAGE CAROUSEL */}
+        <div className="relative">
+
           <img
-            src={product.images?.[0]}
-            alt={product.title}
+            src={product.images[currentImage]}
             className="w-full h-96 object-cover rounded-xl border"
+            alt={product.title}
           />
+
+          {/* LEFT BUTTON */}
+          <button
+            onClick={prevImage}
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full"
+          >
+            ‹
+          </button>
+
+          {/* RIGHT BUTTON */}
+          <button
+            onClick={nextImage}
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full"
+          >
+            ›
+          </button>
+
         </div>
 
-        {/* Info */}
+        {/* PRODUCT INFO */}
         <div>
+
           <h1 className="text-4xl font-serif font-bold mb-4">
             {product.title}
           </h1>
@@ -62,6 +91,7 @@ export default function ProductDetailsPage() {
           >
             Add To Cart
           </button>
+
         </div>
 
       </div>
