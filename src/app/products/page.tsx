@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import ProductCard from "@/app/components/ProductCard/page";
 
@@ -35,7 +35,11 @@ export default function ProductsPage() {
       <div className="max-w-7xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {products.map((product: any) => (
-            <ProductCard key={product._id} product={product} />
+            <Link key={product._id} href={`/products/${product._id}`}>
+              <div className="cursor-pointer">
+                <ProductCard product={product} />
+              </div>
+            </Link>
           ))}
         </div>
       </div>

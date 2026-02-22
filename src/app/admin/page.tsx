@@ -8,7 +8,7 @@ export default function AdminPage() {
     title: "",
     description: "",
     price: "",
-    image: "",
+    images: "",
     category: "",
     stock: "",
   });
@@ -29,7 +29,7 @@ export default function AdminPage() {
         title: form.title,
         description: form.description,
         price: Number(form.price),
-        images: [form.image],
+        images: form.images.split(",").map((img) => img.trim()),
         category: form.category,
         stock: Number(form.stock),
         rating: 4.5,
@@ -42,7 +42,7 @@ export default function AdminPage() {
         title: "",
         description: "",
         price: "",
-        image: "",
+        images: "",
         category: "",
         stock: "",
       });
@@ -95,9 +95,9 @@ export default function AdminPage() {
           />
 
           <input
-            name="image"
-            placeholder="Image URL"
-            value={form.image}
+            name="images"
+            placeholder="Image URLs (comma separated)"
+            value={form.images}
             onChange={handleChange}
             className="w-full p-3 border border-[#d4c5a9] rounded focus:outline-none focus:border-[#8b7355]"
           />

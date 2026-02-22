@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -12,7 +13,7 @@ export default function EditProductPage() {
     title: "",
     description: "",
     price: "",
-    image: "",
+    images: "",
     stock: "",
   });
 
@@ -29,7 +30,7 @@ export default function EditProductPage() {
       title: data.title || "",
       description: data.description || "",
       price: data.price || "",
-      image: data.images?.[0] || "",
+      images: data.images?.join(",") || "",
       stock: data.stock || "",
     });
   };
@@ -50,7 +51,7 @@ export default function EditProductPage() {
       title: form.title,
       description: form.description,
       price: Number(form.price),
-      images: [form.image],
+      images: form.images.split(",").map((img) => img.trim()),
       stock: Number(form.stock),
     }),
   });
@@ -101,12 +102,27 @@ export default function EditProductPage() {
         />
 
         <input
-          name="image"
-          value={form.image}
+          name="images"
+          value={form.images}
           onChange={handleChange}
           placeholder="Image URL"
           className="w-full p-3 border rounded"
-        />
+          />
+
+          {form.images && (
+            <div className="grid grid-cols-3 gap-3 mt-4">
+              {form.images.split(",").map((img, index) => (
+                <Image
+                  key={index}
+                  src={img.trim() || "/placeholder.png"}
+                  alt="preview"
+                  width={320}
+                  height={180}
+                  className="h-28 w-full object-cover rounded border"
+                />
+              ))}
+            </div>
+          )}
 
         <input
           name="stock"
