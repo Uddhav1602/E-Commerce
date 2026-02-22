@@ -3,10 +3,14 @@ import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 
-connectDB();
+// ❌ REMOVE THIS LINE:
+// connectDB();
 
 export async function POST(request: NextRequest) {
     try {
+        // ✅ ADD THIS LINE:
+        await connectDB();
+        
         const reqBody = await request.json();
         const { username, email, password } = reqBody;
 
