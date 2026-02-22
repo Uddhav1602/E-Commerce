@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const productSchema = new mongoose.Schema(
   {
     title: {
@@ -17,18 +19,24 @@ const productSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (val) {
-          return val.length <= 4;
+          // enforce 1..4 images
+          return Array.isArray(val) && val.length >= 1 && val.length <= 4;
         },
-        message: "Product must have between 1 and 4 images"
-      }
+        message: "Product must have between 1 and 4 images",
+      },
     },
 
     stock: {
       type: Number,
       required: true,
       default: 0,
-      min: 0
-    }
+      min: 0,
+    },
   },
   { timestamps: true }
 );
+
+// Prevent model overwrite in Next.js dev/hot reload
+const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
+
+export default Product;
