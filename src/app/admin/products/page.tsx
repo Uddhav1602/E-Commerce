@@ -12,9 +12,20 @@ export default function AdminProductsPage() {
   }, []);
 
   const fetchProducts = async () => {
-    const res = await fetch("/api/products");
-    const data = await res.json();
-    setProducts(data);
+    try {
+      const res = await fetch("/api/products");
+      const data = await res.json();
+      
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        console.error("Failed to load products from API:", data);
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);
+    }
   };
 
   const deleteProduct = async (id: string) => {

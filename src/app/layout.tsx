@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// 1. Import your new components
-
 import { Toaster } from "react-hot-toast";
 import Header from "./components/Header/page";
 import Footer from "./components/Footer/page";
+
+// ✅ ADD THIS
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nerd Store | E-Commerce", // I updated this for you
+  title: "Nerd Store | E-Commerce",
   description: "The best gear for developers",
 };
 
@@ -33,20 +34,24 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* 2. Create the Flex column wrapper so Footer pushes to bottom */}
-        <div className="flex flex-col min-h-screen">
-          {/* Header stays at the top */}
-          <Header />
+        {/* ✅ Wrap everything with Providers */}
+        <Providers>
+          <div className="flex flex-col min-h-screen">
             
-          {/* Main content grows to fill space */}
-          <main className="grow">
-            <Toaster position="top-center" />
-            {children}
-          </main>
+            {/* Header */}
+            <Header />
 
-          {/* Footer stays at the bottom */}
-          <Footer />
-        </div>
+            {/* Main content */}
+            <main className="grow">
+              <Toaster position="top-center" />
+              {children}
+            </main>
+
+            {/* Footer */}
+            <Footer />
+
+          </div>
+        </Providers>
       </body>
     </html>
   );

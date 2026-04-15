@@ -4,12 +4,20 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
 
   images: {
-    domains: [
-      "example-cdn.com",
-      "images.unsplash.com",
-      "via.placeholder.com",
-      "tse4.mm.bing.net",
-      "assets.myntassets.com"
+    // Migrated all domains to remotePatterns (domains is deprecated)
+    remotePatterns: [
+      { protocol: "https", hostname: "developers.google.com" },
+      { protocol: "https", hostname: "www.google.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "www.bing.com" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "assets.myntassets.com" },
+      { protocol: "https", hostname: "tse4.mm.bing.net" },
+      { protocol: "https", hostname: "example-cdn.com" },
+      { protocol: "https", hostname: "via.placeholder.com" },
+      // Wildcard for any https host (development convenience)
+      { protocol: "https", hostname: "**" },
     ],
   },
 };

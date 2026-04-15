@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -135,6 +137,31 @@ export default function AuthPage() {
             >
               {signupButtonDisabled ? "Complete All Fields" : signupLoading ? "Creating..." : "Sign Up"}
             </button>
+
+            {/* ✅ NEW: Divider */}
+            <div className="relative my-6 w-full">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[#d4c5a9]"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-[#faf8f3] text-[#8b7355] font-light">Or</span>
+              </div>
+            </div>
+
+            {/* ✅ NEW: Google Signup Button */}
+            <button
+              onClick={() => signIn("google", { callbackUrl: "/home" })}
+              className="w-full py-3 px-6 border-2 border-[#d4c5a9] rounded-md flex justify-center items-center gap-3 hover:bg-[#f5f0e8] transition-all duration-300 text-[#5a4a3a] font-medium shadow-sm"
+            >
+              <Image
+                src="https://www.google.com/favicon.ico"
+                alt="Google"
+                width={20}
+                height={20}
+                className="w-5 h-5"
+              />
+              <span>Sign up with Google</span>
+            </button>
           </div>
         </div>
 
@@ -202,6 +229,31 @@ export default function AuthPage() {
             >
               {loginButtonDisabled ? "Complete All Fields" : loginLoading ? "Signing In..." : "Sign In"}
             </button>
+
+            {/* ✅ NEW: Divider */}
+            <div className="relative my-6 w-full">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[#d4c5a9]"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-[#faf8f3] text-[#8b7355] font-light">Or</span>
+              </div>
+            </div>
+
+            {/* ✅ NEW: Google Login Button */}
+            <button
+              onClick={() => signIn("google", { callbackUrl: "/home" })}
+              className="w-full py-3 px-6 border-2 border-[#d4c5a9] rounded-md flex justify-center items-center gap-3 hover:bg-[#f5f0e8] transition-all duration-300 text-[#5a4a3a] font-medium shadow-sm"
+            >
+              <Image
+                src="https://www.google.com/favicon.ico"
+                alt="Google"
+                width={20}
+                height={20}
+                className="w-5 h-5"
+              />
+              <span>Sign in with Google</span>
+            </button>
           </div>
         </div>
 
@@ -264,4 +316,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
