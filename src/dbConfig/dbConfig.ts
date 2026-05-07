@@ -2,13 +2,6 @@ import mongoose from "mongoose";
 
 const MONGO_URI = process.env.MONGO_URI!;
 
-// Validate environment variable
-if (!MONGO_URI) {
-  throw new Error(
-    "Please define the MONGO_URI environment variable inside .env.local"
-  );
-}
-
 // Global cache to prevent multiple connections (critical for Next.js)
 let cached = (global as any).mongoose;
 
@@ -17,6 +10,12 @@ if (!cached) {
 }
 
 export async function connectDB() {
+  if (!MONGO_URI) {
+    throw new Error(
+      "Please define the MONGO_URI environment variable inside .env.local"
+    );
+  }
+
   // Return cached connection if exists
   if (cached.conn) {
     console.log("✅ Using cached database connection");
