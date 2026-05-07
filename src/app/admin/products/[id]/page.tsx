@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -18,8 +17,8 @@ export default function EditProductPage() {
   });
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/immutability
     fetchProduct();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchProduct = async () => {
@@ -35,34 +34,46 @@ export default function EditProductPage() {
     });
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: any) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  console.log("UI Update ID:", id);
+    const res = await fetch(`/api/products/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: form.title,
+        description: form.description,
+        price: Number(form.price),
+        images: form.images.split(",").map((img) => img.trim()).filter(Boolean),
+        stock: Number(form.stock),
+      }),
+    });
 
-  const res = await fetch(`/api/products/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      title: form.title,
-      description: form.description,
-      price: Number(form.price),
-      images: form.images.split(",").map((img) => img.trim()),
-      stock: Number(form.stock),
-    }),
-  });
+    if (res.ok) {
+      alert("Updated");
+      router.push("/admin/products");
+    } else {
+      alert("Update failed");
+    }
+  };
 
-  if (res.ok) {
-    alert("Updated");
-    router.push("/admin/products");
-  } else {
-    alert("Update failed");
-  }
-};
+  // Validate image URLs to prevent crashes
+  const previewImages = form.images
+    .split(",")
+    .map((img) => img.trim())
+    .filter((img) => {
+      if (!img) return false;
+      try {
+        const u = new URL(img);
+        return u.protocol === "http:" || u.protocol === "https:";
+      } catch {
+        return false;
+      }
+    });
 
   return (
     <div className="p-10 bg-[#faf8f3] min-h-screen text-[#5a4a3a]">
@@ -105,20 +116,20 @@ export default function EditProductPage() {
           name="images"
           value={form.images}
           onChange={handleChange}
-          placeholder="Image URL"
+          placeholder="Image URLs (comma separated)"
           className="w-full p-3 border rounded"
           />
 
-          {form.images && (
+          {previewImages.length > 0 && (
             <div className="grid grid-cols-3 gap-3 mt-4">
-              {form.images.split(",").map((img, index) => (
-                <Image
+              {previewImages.map((img, index) => (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
                   key={index}
-                  src={img.trim() || "/placeholder.png"}
-                  alt="preview"
-                  width={320}
-                  height={180}
+                  src={img}
+                  alt={`preview ${index + 1}`}
                   className="h-28 w-full object-cover rounded border"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
               ))}
             </div>

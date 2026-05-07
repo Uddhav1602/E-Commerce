@@ -200,7 +200,6 @@ export default function AuthPage() {
               onChange={(e) => setLoginUser({ ...loginUser, password: e.target.value })}
             />
 
-            <div className="w-full flex items-center justify-between mb-2">
               <div className="flex items-center">
                 <input
                   id="remember"
@@ -213,10 +212,6 @@ export default function AuthPage() {
                   Remember me
                 </label>
               </div>
-              <Link href="/forgot-password" className="text-sm text-[#8b7355] hover:text-[#6b5a45] transition-colors">
-                Forgot?
-              </Link>
-            </div>
 
             <button
               onClick={onLogin}

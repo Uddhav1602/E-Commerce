@@ -64,7 +64,7 @@ export default function Header() {
             {[
               { href: "/", label: "Home" },
               { href: "/products", label: "Products" },
-              { href: "/about", label: "About" },
+
             ].map((link) => (
               <Link
                 key={link.href}
@@ -110,12 +110,14 @@ export default function Header() {
             </Link>
 
             {/* Admin */}
-            <Link
-              href="/admin"
-              className="text-[#5a4a3a] hover:text-[#8b7355] px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-[#f5f0e8]"
-            >
-              Admin
-            </Link>
+            {user?.isAdmin && (
+              <Link
+                href="/admin"
+                className="text-[#5a4a3a] hover:text-[#8b7355] px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-[#f5f0e8]"
+              >
+                Admin
+              </Link>
+            )}
 
             {/* ── AUTH AREA ── */}
             {isLoading ? (
@@ -235,7 +237,7 @@ export default function Header() {
             {[
               { href: "/", label: "Home" },
               { href: "/products", label: "Products" },
-              { href: "/about", label: "About" },
+
             ].map((link) => (
               <Link
                 key={link.href}
@@ -260,13 +262,15 @@ export default function Header() {
               )}
             </Link>
 
-            <Link
-              href="/admin"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-[#5a4a3a] hover:bg-[#e8dcc4] hover:text-[#8b7355] block px-4 py-3 rounded-md text-base font-medium transition-all duration-300"
-            >
-              Admin
-            </Link>
+            {user?.isAdmin && (
+              <Link
+                href="/admin"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-[#5a4a3a] hover:bg-[#e8dcc4] hover:text-[#8b7355] block px-4 py-3 rounded-md text-base font-medium transition-all duration-300"
+              >
+                Admin
+              </Link>
+            )}
 
             {user ? (
               <>

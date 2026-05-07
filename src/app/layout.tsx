@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import { Toaster } from "react-hot-toast";
-import Header from "./components/Header/page";
-import Footer from "./components/Footer/page";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // ✅ ADD THIS
 import Providers from "./providers";
@@ -43,7 +42,7 @@ export default function RootLayout({
 
             {/* Main content */}
             <main className="grow">
-              <Toaster position="top-center" />
+
               {children}
             </main>
 

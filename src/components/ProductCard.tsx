@@ -14,6 +14,8 @@ export default function ProductCard({ product, index = 0 }: Props) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
+  if (!product) return null;
+
   // Strictly validate — only allow absolute http(s) URLs to prevent next/image crashes
   const isValidUrl = (s: string) => {
     try {

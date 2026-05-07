@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/dbConfig/dbConfig";
 import Product from "@/models/productModel";
+import { requireAdmin } from "@/lib/authHelpers";
 
 // =======================
 // GET ALL PRODUCTS
@@ -25,6 +26,9 @@ export async function GET() {
 // =======================
 export async function POST(req: NextRequest) {
   try {
+    const adminCheck = await requireAdmin(req);
+    if (adminCheck instanceof NextResponse) return adminCheck;
+
     await connectDB();
 
     const body = await req.json();

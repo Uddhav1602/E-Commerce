@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
+    userId: {
+      type: String,
+      default: null, // null for guest orders
+    },
     customerName: {
       type: String,
       required: true,

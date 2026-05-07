@@ -21,7 +21,7 @@ export default function Home() {
               Explore Collection
             </Link>
             <Link 
-              href="/signup" 
+              href="/auth" 
               className="bg-transparent hover:bg-[#faf8f3]/10 text-[#faf8f3] font-bold py-4 px-10 rounded-lg shadow-lg border-2 border-[#faf8f3] transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
             >
               Join Our Circle
@@ -121,7 +121,7 @@ export default function Home() {
                   <h3 className="font-serif font-bold text-xl mb-2 text-[#5a4a3a]">{product.name}</h3>
                   <p className="text-sm text-[#8b7355] mb-4 font-light">{product.type}</p>
                   <div className="flex justify-between items-center">
-                    <span className="font-serif font-bold text-2xl text-[#8b7355]">${product.price}</span>
+                    <span className="font-serif font-bold text-2xl text-[#8b7355]">₹{product.price}</span>
                     <div className="flex text-[#d4c5a9]">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">

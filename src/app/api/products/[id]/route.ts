@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/dbConfig/dbConfig";
 import Product from "@/models/productModel";
+import { requireAdmin } from "@/lib/authHelpers";
 
 // =======================
 // GET SINGLE PRODUCT
@@ -39,6 +40,9 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const adminCheck = await requireAdmin(req);
+    if (adminCheck instanceof NextResponse) return adminCheck;
+
     const { id } = await context.params;   // ✅ FIX
 
     await connectDB();
@@ -67,6 +71,9 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const adminCheck = await requireAdmin(req);
+    if (adminCheck instanceof NextResponse) return adminCheck;
+
     const { id } = await context.params;   // ✅ FIX
 
     await connectDB();

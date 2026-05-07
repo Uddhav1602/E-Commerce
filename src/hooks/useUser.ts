@@ -8,44 +8,54 @@ export interface AppUser {
   username?: string;
   email?: string;
   image?: string;
+  isAdmin?: boolean;
   source: "nextauth" | "jwt";
 }
 
 export function useUser() {
   const { data: session, status } = useSession();
-  const [jwtUser, setJwtUser] = useState<AppUser | null>(null);
-  const [jwtLoading, setJwtLoading] = useState(true);
+  const [apiUser, setApiUser] = useState<AppUser | null>(null);
+  const [apiLoading, setApiLoading] = useState(true);
 
   useEffect(() => {
-    // Check for custom JWT cookie by calling the /api/auth/me endpoint
+    // Always check /api/auth/me to get the real isAdmin status from DB
     fetch("/api/auth/me")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (data?.user) {
-          setJwtUser({ ...data.user, source: "jwt" });
+          setApiUser(data.user);
         }
       })
       .catch(() => {})
-      .finally(() => setJwtLoading(false));
+      .finally(() => setApiLoading(false));
   }, []);
 
-  const isLoading = status === "loading" || jwtLoading;
+  const isLoading = status === "loading" || apiLoading;
 
-  // NextAuth session takes priority
+  // NextAuth session — merge with API data (which has real isAdmin from DB)
   if (session?.user) {
     return {
       user: {
         username: session.user.name ?? undefined,
         email: session.user.email ?? undefined,
         image: session.user.image ?? undefined,
+        isAdmin: apiUser?.isAdmin ?? false, // Use real DB value from /api/auth/me
         source: "nextauth" as const,
       },
       isLoading,
     };
   }
 
+  // JWT cookie user
+  if (apiUser) {
+    return {
+      user: { ...apiUser, source: "jwt" as const },
+      isLoading,
+    };
+  }
+
   return {
-    user: jwtUser,
+    user: null,
     isLoading,
   };
 }

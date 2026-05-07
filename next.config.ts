@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
 
   images: {
-    // Migrated all domains to remotePatterns (domains is deprecated)
     remotePatterns: [
       { protocol: "https", hostname: "developers.google.com" },
       { protocol: "https", hostname: "www.google.com" },
@@ -16,8 +15,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "tse4.mm.bing.net" },
       { protocol: "https", hostname: "example-cdn.com" },
       { protocol: "https", hostname: "via.placeholder.com" },
-      // Wildcard for any https host (development convenience)
-      { protocol: "https", hostname: "**" },
     ],
   },
 };
