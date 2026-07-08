@@ -24,11 +24,13 @@ export function useUser() {
       .then((data) => {
         if (data?.user) {
           setApiUser(data.user);
+        } else {
+          setApiUser(null);
         }
       })
       .catch(() => {})
       .finally(() => setApiLoading(false));
-  }, []);
+  }, [status]);
 
   const isLoading = status === "loading" || apiLoading;
 

@@ -2,13 +2,34 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 export default function AdminProductsPage() {
+  const { user, isLoading } = useUser();
+  const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  // Auth guard — redirect non-admins
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#faf8f3] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-[#8b7355] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[#8b7355] font-medium">Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !user.isAdmin) {
+    router.push("/");
+    return null;
+  }
 
   const fetchProducts = async () => {
     try {

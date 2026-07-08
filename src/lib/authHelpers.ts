@@ -30,34 +30,40 @@ export async function getTokenUser(request: NextRequest): Promise<TokenPayload |
         }
         return decoded;
       } catch (e) {
-        // Fall back
+        console.error("JWT verification failed:", e instanceof Error ? e.message : e);
+        // Fall back to NextAuth
       }
     }
 
     // Try NextAuth
-    const session = await getServerSession(authOptions);
-    if (session?.user?.email) {
-      await connectDB();
-      const dbUser = await User.findOne({ email: session.user.email });
-      if (dbUser) {
-        return {
-          id: dbUser._id.toString(),
-          username: dbUser.username,
-          email: dbUser.email,
-          isAdmin: dbUser.isAdmin,
-        };
-      } else {
-        return {
-          id: session.user.email,
-          username: session.user.name || "OAuth User",
-          email: session.user.email,
-          isAdmin: false,
-        };
+    try {
+      const session = await getServerSession(authOptions);
+      if (session?.user?.email) {
+        await connectDB();
+        const dbUser = await User.findOne({ email: session.user.email });
+        if (dbUser) {
+          return {
+            id: dbUser._id.toString(),
+            username: dbUser.username,
+            email: dbUser.email,
+            isAdmin: dbUser.isAdmin,
+          };
+        } else {
+          return {
+            id: session.user.email,
+            username: session.user.name || "OAuth User",
+            email: session.user.email,
+            isAdmin: false,
+          };
+        }
       }
+    } catch (sessionError) {
+      console.error("NextAuth getServerSession failed:", sessionError instanceof Error ? sessionError.message : sessionError);
     }
 
     return null;
-  } catch {
+  } catch (error) {
+    console.error("getTokenUser unexpected error:", error instanceof Error ? error.message : error);
     return null;
   }
 }

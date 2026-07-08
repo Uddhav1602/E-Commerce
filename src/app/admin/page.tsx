@@ -3,11 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 const inputClass =
   "w-full px-4 py-3 border-2 border-[#e8dcc4] rounded-xl text-sm text-[#5a4a3a] placeholder-[#a89d8f] focus:outline-none focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 transition-all bg-[#faf8f3]";
 
 export default function AdminPage() {
+  const { user, isLoading } = useUser();
+  const router = useRouter();
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -18,6 +22,23 @@ export default function AdminPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [preview, setPreview] = useState<string[]>([]);
+
+  // Auth guard — redirect non-admins
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#faf8f3] to-[#f5f0e8] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-[#8b7355] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[#8b7355] font-medium">Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !user.isAdmin) {
+    router.push("/");
+    return null;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const updated = { ...form, [e.target.name]: e.target.value };

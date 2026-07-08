@@ -33,6 +33,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Google OAuth users have no password — cannot login via credentials
+    if (!user.password) {
+      return NextResponse.json(
+        { error: "This account uses Google Sign-In. Please log in with Google." },
+        { status: 400 }
+      );
+    }
+
     // Verify password
     const isPasswordValid = await bcryptjs.compare(password, user.password);
     if (!isPasswordValid) {
