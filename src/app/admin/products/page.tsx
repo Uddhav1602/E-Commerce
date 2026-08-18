@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
@@ -10,12 +10,56 @@ export default function AdminProductsPage() {
   const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetchProducts();
+  const fetchProducts = useCallback(async () => {
+    try {
+      const res = await fetch("/api/products");
+      if (!res.ok) {
+        setProducts([]);
+        return;
+      }
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        setProducts([]);
+      }
+    } catch {
+      setProducts([]);
+    }
   }, []);
 
+  // Only fetch products once user is confirmed as admin
+  useEffect(() => {
+    if (!isLoading && user?.isAdmin) {
+      fetchProducts();
+    }
+  }, [isLoading, user, fetchProducts]);
+
+  const deleteProduct = async (id: string) => {
+    const confirmDelete = confirm("Delete this product?");
+    if (!confirmDelete) return;
+
+    const res = await fetch(`/api/products/${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      alert("Product deleted");
+      fetchProducts();
+    } else {
+      alert("Delete failed");
+    }
+  };
+
   // Auth guard — redirect non-admins
-  if (isLoading) {
+  // Auth guard — redirect non-admins
+  useEffect(() => {
+    if (!isLoading && (!user || !user.isAdmin)) {
+      router.push("/");
+    }
+  }, [isLoading, user, router]);
+
+  if (isLoading || !user || !user.isAdmin) {
     return (
       <div className="min-h-screen bg-[#faf8f3] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -25,46 +69,6 @@ export default function AdminProductsPage() {
       </div>
     );
   }
-
-  if (!user || !user.isAdmin) {
-    router.push("/");
-    return null;
-  }
-
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch("/api/products");
-      const data = await res.json();
-      
-      if (Array.isArray(data)) {
-        setProducts(data);
-      } else {
-        console.error("Failed to load products from API:", data);
-        setProducts([]);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      setProducts([]);
-    }
-  };
-
-  const deleteProduct = async (id: string) => {
-  console.log("UI Delete ID:", id);
-
-  const confirmDelete = confirm("Delete this product?");
-  if (!confirmDelete) return;
-
-  const res = await fetch(`/api/products/${id}`, {
-    method: "DELETE",
-  });
-
-  if (res.ok) {
-    alert("Product deleted");
-    fetchProducts();
-  } else {
-    alert("Delete failed");
-  }
-};
 
   return (
     <div className="p-10 bg-[#faf8f3] min-h-screen text-[#5a4a3a]">

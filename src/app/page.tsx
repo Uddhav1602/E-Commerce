@@ -10,7 +10,10 @@ export default function Home() {
 
   useEffect(() => {
     fetch("/api/products")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("API error");
+        return r.json();
+      })
       .then((data) => {
         if (Array.isArray(data)) setFeaturedProducts(data.slice(0, 4));
       })

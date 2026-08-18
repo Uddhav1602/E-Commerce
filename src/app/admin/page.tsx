@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/useUser";
@@ -24,7 +24,13 @@ export default function AdminPage() {
   const [preview, setPreview] = useState<string[]>([]);
 
   // Auth guard — redirect non-admins
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading && (!user || !user.isAdmin)) {
+      router.push("/");
+    }
+  }, [isLoading, user, router]);
+
+  if (isLoading || !user || !user.isAdmin) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#faf8f3] to-[#f5f0e8] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -33,11 +39,6 @@ export default function AdminPage() {
         </div>
       </div>
     );
-  }
-
-  if (!user || !user.isAdmin) {
-    router.push("/");
-    return null;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

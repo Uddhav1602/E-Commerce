@@ -15,15 +15,17 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     try {
       const res = await fetch("/api/products");
+      if (!res.ok) {
+        setProducts([]);
+        return;
+      }
       const data = await res.json();
       if (Array.isArray(data)) {
         setProducts(data);
       } else {
-        console.error("Failed to load products from API:", data);
         setProducts([]);
       }
-    } catch (error) {
-      console.error("Error fetching products:", error);
+    } catch {
       setProducts([]);
     } finally {
       setLoading(false);

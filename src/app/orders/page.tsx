@@ -23,10 +23,14 @@ export default function OrdersPage() {
   const fetchOrders = async () => {
     try {
       const res = await fetch("/api/orders");
+      if (!res.ok) {
+        setOrders([]);
+        return;
+      }
       const data = await res.json();
       if (Array.isArray(data)) setOrders(data);
-    } catch (error) {
-      console.error("Failed to fetch orders", error);
+    } catch {
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -154,7 +158,21 @@ export default function OrdersPage() {
                         {order.items.map((item: any, idx: number) => (
                           <div key={idx} className="flex items-center gap-4 py-3 border-b last:border-0 border-[#f5f0e8]">
                             <div className="relative w-16 h-16 rounded-xl border border-[#e8dcc4] bg-[#f5f0e8] overflow-hidden shrink-0">
-                              <Image src={item.image} alt={item.title} fill className="object-cover" sizes="64px" />
+                              {(() => {
+                                try {
+                                  const u = new URL(item.image);
+                                  if (u.protocol === "http:" || u.protocol === "https:") {
+                                    return <Image src={item.image} alt={item.title} fill className="object-cover" sizes="64px" />;
+                                  }
+                                } catch {}
+                                return (
+                                  <div className="flex items-center justify-center h-full text-[#c4b49a]">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                  </div>
+                                );
+                              })()}
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold text-[#5a4a3a] truncate">{item.title}</p>

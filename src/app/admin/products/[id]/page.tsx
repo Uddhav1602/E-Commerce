@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
 
 export default function EditProductPage() {
-
   const { id } = useParams();
   const router = useRouter();
+  const { user, isLoading } = useUser();
 
   const [form, setForm] = useState({
     title: "",
@@ -15,23 +16,36 @@ export default function EditProductPage() {
     images: "",
     stock: "",
   });
+  const [loadingProduct, setLoadingProduct] = useState(true);
 
   useEffect(() => {
-    fetchProduct();
+    if (!isLoading && user?.isAdmin) {
+      fetchProduct();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLoading, user, id]);
 
   const fetchProduct = async () => {
-    const res = await fetch(`/api/products/${id}`);
-    const data = await res.json();
+    try {
+      const res = await fetch(`/api/products/${id}`);
+      if (!res.ok) {
+        setLoadingProduct(false);
+        return;
+      }
+      const data = await res.json();
 
-    setForm({
-      title: data.title || "",
-      description: data.description || "",
-      price: data.price || "",
-      images: data.images?.join(",") || "",
-      stock: data.stock || "",
-    });
+      setForm({
+        title: data.title || "",
+        description: data.description || "",
+        price: data.price || "",
+        images: data.images?.join(",") || "",
+        stock: data.stock || "",
+      });
+    } catch {
+      // Silently handle fetch errors
+    } finally {
+      setLoadingProduct(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -74,6 +88,24 @@ export default function EditProductPage() {
         return false;
       }
     });
+
+  // Auth guard — redirect non-admins
+  useEffect(() => {
+    if (!isLoading && (!user || !user.isAdmin)) {
+      router.push("/");
+    }
+  }, [isLoading, user, router]);
+
+  if (isLoading || loadingProduct || !user || !user.isAdmin) {
+    return (
+      <div className="min-h-screen bg-[#faf8f3] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-[#8b7355] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[#8b7355] font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-10 bg-[#faf8f3] min-h-screen text-[#5a4a3a]">

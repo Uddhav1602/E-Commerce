@@ -14,17 +14,22 @@ export default function ProductDetailsPage() {
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchProduct();
-  }, []);
+  }, [id]);
 
   const fetchProduct = async () => {
     try {
       const res = await fetch(`/api/products/${id}`);
+      if (!res.ok) {
+        setProduct(null);
+        return;
+      }
       const data = await res.json();
       setProduct(data);
-    } catch (e) {
-      console.error(e);
+    } catch {
+      setProduct(null);
     } finally {
       setLoading(false);
     }
