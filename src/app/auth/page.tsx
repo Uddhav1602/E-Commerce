@@ -51,6 +51,10 @@ export default function AuthPage() {
       const response = await axios.post("/api/auth/signup", signupUser);
       console.log("Signup success", response.data);
       toast.success("Account created! Please login.");
+      // Pre-fill login form with the email they just signed up with
+      setLoginUser({ email: signupUser.email, password: "" });
+      // Clear signup form
+      setSignupUser({ email: "", password: "", username: "" });
       // Switch to login view with animation
       setIsSignUp(false);
     } catch (error: any) {

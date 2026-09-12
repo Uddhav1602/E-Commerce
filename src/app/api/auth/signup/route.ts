@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 // =======================
 // SIGNUP
@@ -56,21 +55,8 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
     });
 
-    // Create JWT payload
-    const tokenPayload = {
-      id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-      isAdmin: newUser.isAdmin, // false by default
-    };
-
-    // Sign JWT — 1 day expiry
-    const token = jwt.sign(tokenPayload, process.env.TOKEN_SECRET!, {
-      expiresIn: "1d",
-    });
-
-    // Build response
-    const response = NextResponse.json(
+    // Return success — user will log in manually via the Sign In form
+    return NextResponse.json(
       {
         message: "Account created successfully",
         user: {
@@ -81,17 +67,6 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-
-    // Set httpOnly cookie
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24, // 1 day
-    });
-
-    return response;
   } catch (error: any) {
     console.error("Signup error:", error);
     return NextResponse.json(

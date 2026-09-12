@@ -73,6 +73,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Clear any stale token cookie before setting the new one
+    response.cookies.delete("token");
+
     // Set httpOnly cookie
     response.cookies.set("token", token, {
       httpOnly: true,
