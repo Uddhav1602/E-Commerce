@@ -33,9 +33,10 @@ export default function AuthPage() {
   const onLogin = async () => {
     try {
       setLoginLoading(true);
-      const response = await axios.post("/api/auth/login", loginUser);
+      const response = await axios.post("/api/user/login", loginUser);
       console.log("Login success", response.data);
       toast.success("Login success");
+      router.refresh();
       router.push("/home");
     } catch (error: any) {
       console.log("Login failed", error.message);
@@ -48,7 +49,7 @@ export default function AuthPage() {
   const onSignup = async () => {
     try {
       setSignupLoading(true);
-      const response = await axios.post("/api/auth/signup", signupUser);
+      const response = await axios.post("/api/user/signup", signupUser);
       console.log("Signup success", response.data);
       toast.success("Account created! Please login.");
       // Pre-fill login form with the email they just signed up with

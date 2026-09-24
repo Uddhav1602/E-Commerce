@@ -63,11 +63,14 @@ export default function ProductDetailsPage() {
   // Strictly validate — only allow absolute http(s) URLs to prevent next/image crashes
   const isValidUrl = (s: string) => {
     try {
-      const u = new URL(s);
+      const trimmed = (s || "").trim().replace(/,+$/, "");
+      const u = new URL(trimmed);
       return u.protocol === "http:" || u.protocol === "https:";
     } catch { return false; }
   };
-  const validImages: string[] = (product.images ?? []).filter(isValidUrl);
+  const validImages: string[] = (product.images ?? [])
+    .map((s: string) => (typeof s === "string" ? s.trim().replace(/,+$/, "") : ""))
+    .filter(isValidUrl);
   const isInStock = product.stock > 0;
 
 

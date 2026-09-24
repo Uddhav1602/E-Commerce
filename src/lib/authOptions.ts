@@ -31,5 +31,25 @@ export const authOptions: AuthOptions = {
       }
       return true; // Allow sign-in
     },
+    async jwt({ token }) {
+      if (token?.email) {
+        try {
+          await connectDB();
+          const dbUser = await User.findOne({ email: token.email }).select("isAdmin");
+          if (dbUser) {
+            token.isAdmin = dbUser.isAdmin ?? false;
+          }
+        } catch (error) {
+          console.error("Error in NextAuth jwt callback:", error);
+        }
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as any).isAdmin = token.isAdmin ?? false;
+      }
+      return session;
+    },
   },
 };

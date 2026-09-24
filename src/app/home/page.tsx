@@ -21,7 +21,7 @@ export default function Home() {
               Explore Collection
             </Link>
             <Link 
-              href="/auth" 
+              href="/circle" 
               className="bg-transparent hover:bg-[#faf8f3]/10 text-[#faf8f3] font-bold py-4 px-10 rounded-lg shadow-lg border-2 border-[#faf8f3] transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
             >
               Join Our Circle

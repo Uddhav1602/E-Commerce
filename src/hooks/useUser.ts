@@ -2,7 +2,8 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
 
 export interface AppUser {
   username?: string;
@@ -16,10 +17,11 @@ export function useUser() {
   const { data: session, status } = useSession();
   const [apiUser, setApiUser] = useState<AppUser | null>(null);
   const [apiLoading, setApiLoading] = useState(true);
+  const pathname = usePathname();
 
-  useEffect(() => {
-    // Always check /api/auth/me to get the real isAdmin status from DB
-    fetch("/api/auth/me")
+  const fetchUser = useCallback(() => {
+    setApiLoading(true);
+    fetch("/api/user/me")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (data?.user) {
@@ -30,7 +32,12 @@ export function useUser() {
       })
       .catch(() => {})
       .finally(() => setApiLoading(false));
-  }, [status]);
+  }, []);
+
+  useEffect(() => {
+    // Re-fetch user data when the route changes or NextAuth status changes
+    fetchUser();
+  }, [status, pathname, fetchUser]);
 
   const isLoading = status === "loading" || apiLoading;
 
@@ -61,3 +68,4 @@ export function useUser() {
     isLoading,
   };
 }
+

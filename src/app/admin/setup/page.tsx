@@ -23,7 +23,7 @@ export default function AdminSetupPage() {
 
     try {
       setIsSubmitting(true);
-      const response = await axios.post("/api/auth/promote-admin", {
+      const response = await axios.post("/api/user/promote-admin", {
         adminKey: adminKey.trim(),
       });
       console.log("Admin promotion success:", response.data);

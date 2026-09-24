@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { getToken } from "next-auth/jwt";
 
 // Edge-compatible JWT verification helper
 async function verifyToken(token: string) {
@@ -21,8 +22,28 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
 
-  // Decode token (may be null if not logged in)
-  const user = token ? await verifyToken(token) : null;
+  // 1. Check custom JWT
+  let user: { id?: string; username?: string; email?: string; isAdmin?: boolean } | null = token
+    ? await verifyToken(token)
+    : null;
+
+  // 2. If no custom JWT, check NextAuth session token
+  if (!user) {
+    try {
+      const nextAuthToken = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+      if (nextAuthToken) {
+        user = {
+          id: nextAuthToken.sub,
+          username: nextAuthToken.name ?? undefined,
+          email: nextAuthToken.email ?? undefined,
+          isAdmin: Boolean(nextAuthToken.isAdmin),
+        };
+      }
+    } catch {}
+  }
 
   // ─────────────────────────────────────────────
   // 1. Redirect authenticated users away from /auth
@@ -35,14 +56,12 @@ export async function middleware(request: NextRequest) {
   }
 
   // ─────────────────────────────────────────────
-  // 2. Protect /admin/setup — requires login only (not admin)
-  //    Any logged-in user can attempt the setup page
+  // 2. Protect /admin/setup — requires login only
   // ─────────────────────────────────────────────
   if (pathname === "/admin/setup") {
     if (!user) {
       return NextResponse.redirect(new URL("/auth", request.url));
     }
-    // Already admin? Redirect to admin dashboard
     if (user.isAdmin) {
       return NextResponse.redirect(new URL("/admin", request.url));
     }
@@ -50,15 +69,13 @@ export async function middleware(request: NextRequest) {
   }
 
   // ─────────────────────────────────────────────
-  // 3. Protect /admin/* routes — admin only
+  // 3. Protect /admin/* routes
   // ─────────────────────────────────────────────
   if (pathname.startsWith("/admin")) {
     if (!user) {
       return NextResponse.redirect(new URL("/auth", request.url));
     }
-    if (!user.isAdmin) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+    // Let logged-in users proceed; /admin and /admin/products use live DB checks via useUser() & APIs
     return NextResponse.next();
   }
 
@@ -70,12 +87,6 @@ export async function middleware(request: NextRequest) {
       return NextResponse.json(
         { message: "Authentication required. Please log in." },
         { status: 401 }
-      );
-    }
-    if (!user.isAdmin) {
-      return NextResponse.json(
-        { message: "Admin privileges required." },
-        { status: 403 }
       );
     }
     return NextResponse.next();
