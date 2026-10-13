@@ -37,7 +37,7 @@ export default function AuthPage() {
       console.log("Login success", response.data);
       toast.success("Login success");
       router.refresh();
-      router.push("/home");
+      router.push("/");
     } catch (error: any) {
       console.log("Login failed", error.message);
       toast.error(error.response?.data?.error || "Login failed");
@@ -155,7 +155,7 @@ export default function AuthPage() {
 
             {/* ✅ NEW: Google Signup Button */}
             <button
-              onClick={() => signIn("google", { callbackUrl: "/home" })}
+              onClick={() => signIn("google", { callbackUrl: "/" })}
               className="w-full py-3 px-6 border-2 border-[#d4c5a9] rounded-md flex justify-center items-center gap-3 hover:bg-[#f5f0e8] transition-all duration-300 text-[#5a4a3a] font-medium shadow-sm"
             >
               <Image
@@ -242,7 +242,7 @@ export default function AuthPage() {
 
             {/* ✅ NEW: Google Login Button */}
             <button
-              onClick={() => signIn("google", { callbackUrl: "/home" })}
+              onClick={() => signIn("google", { callbackUrl: "/" })}
               className="w-full py-3 px-6 border-2 border-[#d4c5a9] rounded-md flex justify-center items-center gap-3 hover:bg-[#f5f0e8] transition-all duration-300 text-[#5a4a3a] font-medium shadow-sm"
             >
               <Image

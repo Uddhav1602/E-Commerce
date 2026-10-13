@@ -73,17 +73,34 @@ export default function AdminProductsPage() {
   return (
     <div className="p-10 bg-[#faf8f3] min-h-screen text-[#5a4a3a]">
 
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-serif font-bold">
-          Manage Products
-        </h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-serif font-bold">
+            Manage Products
+          </h1>
+          <p className="text-[#8b7355] text-sm mt-1">Review, edit, and manage catalog items</p>
+        </div>
 
-        <Link
-          href="/admin"
-          className="bg-[#8b7355] text-white px-5 py-2 rounded"
-        >
-          Add Product
-        </Link>
+        <div className="flex gap-2.5 flex-wrap">
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium border border-[#e8dcc4] text-[#5a4a3a] hover:bg-[#e8dcc4] transition-all bg-white shadow-xs"
+          >
+            Home Page
+          </Link>
+          <Link
+            href="/profile"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium border border-[#e8dcc4] text-[#5a4a3a] hover:bg-[#e8dcc4] transition-all bg-white shadow-xs"
+          >
+            My Profile
+          </Link>
+          <Link
+            href="/admin"
+            className="bg-[#8b7355] hover:bg-[#6b5a45] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-xs"
+          >
+            + Add Product
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow border">

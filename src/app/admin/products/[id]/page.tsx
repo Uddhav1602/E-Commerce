@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useUser } from "@/hooks/useUser";
 
 export default function EditProductPage() {
@@ -110,9 +111,32 @@ export default function EditProductPage() {
   return (
     <div className="p-10 bg-[#faf8f3] min-h-screen text-[#5a4a3a]">
 
-      <h1 className="text-3xl font-serif mb-6">
-        Edit Product
-      </h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 max-w-xl">
+        <h1 className="text-3xl font-serif font-bold">
+          Edit Product
+        </h1>
+
+        <div className="flex gap-2 flex-wrap">
+          <Link
+            href="/"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium border border-[#e8dcc4] text-[#5a4a3a] hover:bg-[#e8dcc4] transition-all bg-white"
+          >
+            Home Page
+          </Link>
+          <Link
+            href="/profile"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium border border-[#e8dcc4] text-[#5a4a3a] hover:bg-[#e8dcc4] transition-all bg-white"
+          >
+            My Profile
+          </Link>
+          <Link
+            href="/admin/products"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#8b7355] text-white hover:bg-[#6b5a45] transition-all"
+          >
+            All Products
+          </Link>
+        </div>
+      </div>
 
       <form
         onSubmit={handleSubmit}

@@ -103,7 +103,7 @@ export default function ProfilePage() {
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-24">
           <Link
-            href="/home"
+            href="/"
             className="inline-flex items-center gap-2 text-[#e8dcc4] hover:text-white transition-colors text-sm mb-8"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,14 +164,16 @@ export default function ProfilePage() {
 
             {/* Actions */}
             <div className="shrink-0 flex gap-2">
-              {user.isAdmin && (
-                <Link
-                  href="/admin"
-                  className="px-4 py-2.5 rounded-xl text-sm font-medium bg-[#f5f0e8] text-[#8b7355] hover:bg-[#e8dcc4] transition-colors border border-[#e8dcc4]"
-                >
-                  Admin Panel
-                </Link>
-              )}
+              <Link
+                href={user.isAdmin ? "/admin" : "/admin/setup"}
+                className="px-4 py-2.5 rounded-xl text-sm font-medium bg-[#f5f0e8] text-[#8b7355] hover:bg-[#e8dcc4] transition-colors border border-[#e8dcc4] flex items-center gap-1.5"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {user.isAdmin ? "Admin Panel" : "Admin Setup"}
+              </Link>
               <button
                 onClick={handleLogout}
                 className="px-4 py-2.5 rounded-xl text-sm font-medium bg-red-50 text-red-500 hover:bg-red-100 transition-colors border border-red-100"
@@ -477,22 +479,24 @@ export default function ProfilePage() {
                     </div>
                   </button>
 
-                  {user.isAdmin && (
-                    <Link
-                      href="/admin"
-                      className="flex items-center gap-3 px-5 py-4 rounded-xl border border-amber-200 hover:border-amber-400 bg-amber-50/50 hover:bg-amber-50 transition-all group"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
-                        <svg className="w-5 h-5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="font-medium text-amber-800">Admin Dashboard</p>
-                        <p className="text-xs text-amber-600">Manage products & orders</p>
-                      </div>
-                    </Link>
-                  )}
+                  <Link
+                    href={user.isAdmin ? "/admin" : "/admin/setup"}
+                    className="flex items-center gap-3 px-5 py-4 rounded-xl border border-amber-200 hover:border-amber-400 bg-amber-50/50 hover:bg-amber-50 transition-all group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
+                      <svg className="w-5 h-5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-medium text-amber-800">
+                        {user.isAdmin ? "Admin Dashboard" : "Admin Verification"}
+                      </p>
+                      <p className="text-xs text-amber-600">
+                        {user.isAdmin ? "Manage products & orders" : "Enter admin key to activate privileges"}
+                      </p>
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>

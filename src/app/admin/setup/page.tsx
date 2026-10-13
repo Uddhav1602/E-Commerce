@@ -185,7 +185,7 @@ export default function AdminSetupPage() {
           {/* Footer */}
           <div className="px-8 pb-6">
             <Link
-              href="/home"
+              href="/"
               className="flex items-center justify-center gap-2 text-sm text-[#8b7355] hover:text-[#5a4a3a] transition-colors font-light"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

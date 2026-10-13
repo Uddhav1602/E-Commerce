@@ -108,10 +108,28 @@ export default function AdminPage() {
             <h1 className="text-4xl font-serif font-bold">Admin Dashboard</h1>
             <p className="text-[#8b7355] mt-1">Manage your store products</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border-2 border-[#e8dcc4] text-[#5a4a3a] hover:bg-[#e8dcc4] transition-all bg-white shadow-xs"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              Home Page
+            </Link>
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border-2 border-[#e8dcc4] text-[#5a4a3a] hover:bg-[#e8dcc4] transition-all bg-white shadow-xs"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              My Profile
+            </Link>
             <Link
               href="/admin/products"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium border-2 border-[#8b7355] text-[#8b7355] hover:bg-[#8b7355] hover:text-white transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium border-2 border-[#8b7355] text-[#8b7355] hover:bg-[#8b7355] hover:text-white transition-all bg-white"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />

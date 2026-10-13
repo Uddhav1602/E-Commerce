@@ -48,7 +48,7 @@ export function useUser() {
         username: session.user.name ?? undefined,
         email: session.user.email ?? undefined,
         image: session.user.image ?? undefined,
-        isAdmin: apiUser?.isAdmin ?? false, // Use real DB value from /api/auth/me
+        isAdmin: Boolean((session.user as any)?.isAdmin || apiUser?.isAdmin),
         source: "nextauth" as const,
       },
       isLoading,
@@ -58,7 +58,7 @@ export function useUser() {
   // JWT cookie user
   if (apiUser) {
     return {
-      user: { ...apiUser, source: "jwt" as const },
+      user: { ...apiUser, isAdmin: Boolean(apiUser.isAdmin), source: "jwt" as const },
       isLoading,
     };
   }
