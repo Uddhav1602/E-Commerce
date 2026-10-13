@@ -30,10 +30,39 @@ export async function middleware(request: NextRequest) {
   // 2. If no custom JWT, check NextAuth session token
   if (!user) {
     try {
-      const nextAuthToken = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET,
-      });
+      const secret = process.env.NEXTAUTH_SECRET || process.env.TOKEN_SECRET;
+      const isSecure =
+        request.nextUrl.protocol === "https:" ||
+        request.headers.get("x-forwarded-proto") === "https" ||
+        request.cookies.has("__Secure-next-auth.session-token") ||
+        request.cookies.has("__Secure-next-auth.session-token.0");
+
+      let nextAuthToken = null;
+
+      if (isSecure) {
+        nextAuthToken = await getToken({
+          req: request,
+          secret,
+          secureCookie: true,
+        });
+      }
+
+      if (!nextAuthToken) {
+        nextAuthToken = await getToken({
+          req: request,
+          secret,
+          secureCookie: false,
+        });
+      }
+
+      if (!nextAuthToken && !isSecure) {
+        nextAuthToken = await getToken({
+          req: request,
+          secret,
+          secureCookie: true,
+        });
+      }
+
       if (nextAuthToken) {
         user = {
           id: nextAuthToken.sub,

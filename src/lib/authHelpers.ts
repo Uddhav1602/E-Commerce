@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { connectDB } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { getServerSession } from "next-auth";
+import { getToken } from "next-auth/jwt";
 import { authOptions } from "@/lib/authOptions";
 
 export interface TokenPayload {
@@ -35,7 +36,50 @@ export async function getTokenUser(request: NextRequest): Promise<TokenPayload |
       }
     }
 
-    // Try NextAuth
+    // Try NextAuth via getToken (direct cookie read, works on Edge/Node and Vercel HTTPS)
+    try {
+      const secret = process.env.NEXTAUTH_SECRET || process.env.TOKEN_SECRET;
+      const isSecure =
+        request.nextUrl.protocol === "https:" ||
+        request.headers.get("x-forwarded-proto") === "https" ||
+        request.cookies.has("__Secure-next-auth.session-token") ||
+        request.cookies.has("__Secure-next-auth.session-token.0");
+
+      let nextAuthToken = null;
+      if (isSecure) {
+        nextAuthToken = await getToken({ req: request, secret, secureCookie: true });
+      }
+      if (!nextAuthToken) {
+        nextAuthToken = await getToken({ req: request, secret, secureCookie: false });
+      }
+      if (!nextAuthToken && !isSecure) {
+        nextAuthToken = await getToken({ req: request, secret, secureCookie: true });
+      }
+
+      if (nextAuthToken?.email) {
+        await connectDB();
+        const dbUser = await User.findOne({ email: nextAuthToken.email });
+        if (dbUser) {
+          return {
+            id: dbUser._id.toString(),
+            username: dbUser.username,
+            email: dbUser.email,
+            isAdmin: Boolean(dbUser.isAdmin),
+          };
+        } else {
+          return {
+            id: nextAuthToken.sub || nextAuthToken.email,
+            username: nextAuthToken.name || "OAuth User",
+            email: nextAuthToken.email,
+            isAdmin: Boolean(nextAuthToken.isAdmin),
+          };
+        }
+      }
+    } catch (tokenErr) {
+      console.error("NextAuth getToken in authHelpers failed:", tokenErr);
+    }
+
+    // Fallback: getServerSession
     try {
       const session = await getServerSession(authOptions);
       if (session?.user?.email) {
@@ -46,7 +90,7 @@ export async function getTokenUser(request: NextRequest): Promise<TokenPayload |
             id: dbUser._id.toString(),
             username: dbUser.username,
             email: dbUser.email,
-            isAdmin: dbUser.isAdmin,
+            isAdmin: Boolean(dbUser.isAdmin),
           };
         } else {
           return {
