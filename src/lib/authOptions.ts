@@ -6,11 +6,15 @@ import User from "@/models/userModel";
 export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || process.env.TOKEN_SECRET || "default_nextauth_fallback_secret_key",
+  pages: {
+    signIn: "/auth",
+    error: "/auth", // Redirect auth errors to /auth instead of crashing on /api/auth/error
+  },
   callbacks: {
     async signIn({ user }) {
       // Create user in MongoDB on first Google login

@@ -82,6 +82,24 @@ export default function AuthPage() {
     }
   }, [signupUser]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const authError = params.get("error");
+      if (authError) {
+        if (authError === "OAuthCallback" || authError === "OAuthSignin") {
+          toast.error("Google authentication failed. Please verify OAuth credentials.");
+        } else if (authError === "Configuration") {
+          toast.error("Server configuration error. Please verify NEXTAUTH_SECRET and NEXTAUTH_URL.");
+        } else if (authError === "AccessDenied") {
+          toast.error("Access denied. Please try again.");
+        } else {
+          toast.error(`Authentication error: ${authError}`);
+        }
+      }
+    }
+  }, []);
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#f5f5dc] via-[#e8dcc4] to-[#d4c5a9] py-8 px-4">
       {/* Decorative background pattern */}
